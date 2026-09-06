@@ -25,23 +25,73 @@ function setFieldStatus(field, errorElement, isValid, message) {
   }
 }
 
-// Placeholder validators - real logic added in Step 5
 function validateEmail() {
-  console.log("validateEmail called");
+  if (email.validity.valueMissing) {
+    setFieldStatus(email, emailError, false, "Email is required.");
+  } else if (email.validity.typeMismatch) {
+    setFieldStatus(email, emailError, false, "Please enter a valid email address.");
+  } else {
+    setFieldStatus(email, emailError, true, "");
+  }
 }
 
 function validateCountry() {
-  console.log("validateCountry called");
+  if (country.validity.valueMissing) {
+    setFieldStatus(country, countryError, false, "Please select a country.");
+  } else {
+    setFieldStatus(country, countryError, true, "");
+  }
 }
 
 function validatePostalCode() {
-  console.log("validatePostalCode called");
+  const value = postalCode.value.trim();
+  // Simple generic rule: 3-10 alphanumeric characters (adjust per country later if needed)
+  const postalRegex = /^[A-Za-z0-9\s-]{3,10}$/;
+
+  if (value === "") {
+    setFieldStatus(postalCode, postalCodeError, false, "Postal code is required.");
+  } else if (!postalRegex.test(value)) {
+    setFieldStatus(postalCode, postalCodeError, false, "Enter a valid postal code.");
+  } else {
+    setFieldStatus(postalCode, postalCodeError, true, "");
+  }
 }
 
 function validatePassword() {
-  console.log("validatePassword called");
+  if (password.validity.valueMissing) {
+    setFieldStatus(password, passwordError, false, "Password is required.");
+  } else if (password.validity.tooShort) {
+    setFieldStatus(password, passwordError, false, "Password must be at least 8 characters.");
+  } else {
+    setFieldStatus(password, passwordError, true, "");
+  }
+  // Re-check confirm password whenever password changes
+  if (confirmPassword.value !== "") {
+    validateConfirmPassword();
+  }
 }
 
 function validateConfirmPassword() {
-  console.log("validateConfirmPassword called");
+  if (confirmPassword.value === "") {
+    setFieldStatus(confirmPassword, confirmPasswordError, false, "Please confirm your password.");
+  } else if (confirmPassword.value !== password.value) {
+    setFieldStatus(confirmPassword, confirmPasswordError, false, "Passwords do not match.");
+  } else {
+    setFieldStatus(confirmPassword, confirmPasswordError, true, "");
+  }
 }
+
+email.addEventListener("input", validateEmail);
+email.addEventListener("blur", validateEmail);
+
+country.addEventListener("change", validateCountry);
+country.addEventListener("blur", validateCountry);
+
+postalCode.addEventListener("input", validatePostalCode);
+postalCode.addEventListener("blur", validatePostalCode);
+
+password.addEventListener("input", validatePassword);
+password.addEventListener("blur", validatePassword);
+
+confirmPassword.addEventListener("input", validateConfirmPassword);
+confirmPassword.addEventListener("blur", validateConfirmPassword);
