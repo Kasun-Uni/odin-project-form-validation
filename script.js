@@ -95,3 +95,47 @@ password.addEventListener("blur", validatePassword);
 
 confirmPassword.addEventListener("input", validateConfirmPassword);
 confirmPassword.addEventListener("blur", validateConfirmPassword);
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  // Re-run every validator, in case a field was never touched
+  validateEmail();
+  validateCountry();
+  validatePostalCode();
+  validatePassword();
+  validateConfirmPassword();
+
+  const isFormValid =
+    email.validity.valid &&
+    country.validity.valid &&
+    postalCode.value.trim() !== "" &&
+    /^[A-Za-z0-9\s-]{3,10}$/.test(postalCode.value.trim()) &&
+    password.validity.valid &&
+    confirmPassword.value === password.value &&
+    confirmPassword.value !== "";
+
+  let successMessage = document.querySelector(".success-message");
+  let formErrorMessage = document.querySelector(".form-error-message");
+
+  if (!isFormValid) {
+    if (!formErrorMessage) {
+      formErrorMessage = document.createElement("p");
+      formErrorMessage.classList.add("form-error-message");
+      form.appendChild(formErrorMessage);
+    }
+    formErrorMessage.textContent = "Please fix the errors above before submitting.";
+    if (successMessage) successMessage.remove();
+    return;
+  }
+
+  // All valid!
+  if (formErrorMessage) formErrorMessage.remove();
+
+  if (!successMessage) {
+    successMessage = document.createElement("p");
+    successMessage.classList.add("success-message");
+    form.appendChild(successMessage);
+  }
+  successMessage.textContent = "🖐️ High five! Your form was submitted successfully.";
+});

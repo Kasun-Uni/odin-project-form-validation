@@ -82,3 +82,9 @@ button[type="submit"]:hover {
   font-weight: bold;
   margin-top: 1rem;
 }
+
+.form-error-message {
+  color: #ef4444;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
